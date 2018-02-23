@@ -26,7 +26,7 @@ let texturePacker = require('../gulp-free-tex-packer');
 
 gulp.task('pack', function() {
     return gulp.src('src/**/*.*')
-		.pipe(texturePacker({
+	.pipe(texturePacker({
             textureName: "my-texture",
             width: 1024,
             height: 1024,
