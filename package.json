@@ -1,7 +1,7 @@
 {
   "name": "gulp-free-tex-packer",
   "displayName": "Gulp free texture packer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Gulp texture packer",
   "url": "https://github.com/odrick/gulp-free-tex-packer",
   "main": "index.js",
