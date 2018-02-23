@@ -39,7 +39,7 @@ gulp.task('pack', function() {
             removeFileExtension: true,
             prependFolderName: true
         }))
-		.pipe(gulp.dest('dest/'));
+	.pipe(gulp.dest('dest/'));
 });
 ```
 
