@@ -1,5 +1,6 @@
 # gulp-free-tex-packer
 > Free texture packer module for gulp 
+
 > Based on https://github.com/odrick/free-tex-packer
 
 # Install
