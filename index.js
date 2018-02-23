@@ -1,11 +1,9 @@
 let through = require("through2");
 let path = require("path");
 let Jimp = require("jimp");
-let PackProcessor = require("./PackProcessor");
 let getPackerByType = require("./packers/index").getPackerByType;
-let TextureRenderer = require("./utils/TextureRenderer");
 let getExporterByType = require("./exporters/index").getExporterByType;
-let tinify = require("tinify");
+let FilesProcessor = require("./FilesProcessor");
 let appInfo = require('./package.json');
 
 function fixPath(path) {
@@ -19,6 +17,22 @@ function getErrorDescription(txt) {
 module.exports = function(options) {
     options = options || {};
     options = Object.assign({}, options);
+    
+    options.textureName = options.textureName || "pack-result";
+    options.width = options.width || 2048;
+    options.height = options.height || 2048;
+    options.fixedSize = options.fixedSize || false;
+    options.padding = options.padding || 0;
+    options.allowRotation = options.allowRotation || true;
+    options.detectIdentical = options.detectIdentical || true;
+    options.allowTrim = options.allowTrim || true;
+    options.removeFileExtension = options.removeFileExtension || false;
+    options.prependFolderName = options.prependFolderName || true;
+    options.textureFormat = options.textureFormat || "png";
+    options.base64Export = options.base64Export || false;
+    options.scale = options.scale || 1;
+    options.tinify = options.tinify || false;
+    options.tinifyKey = options.tinifyKey || "";
 
     if(!options.packer) options.packer = "MaxRectsBin";
     if(!options.packerMethod) options.packerMethod = "BestShortSideFit";
@@ -41,6 +55,7 @@ module.exports = function(options) {
 
     options.packer = packer;
     options.packerMethod = packerMethod;
+    options.exporter = exporter;
 
     let files = [];
     let firstFile = null;
@@ -77,58 +92,6 @@ module.exports = function(options) {
         });
     }
 
-    function tinifyImage(buffer, callback) {
-        if(!options.tinify) {
-            callback(buffer);
-            return;
-        }
-
-        tinify.key = options.tinifyKey;
-
-        tinify.fromBuffer(buffer).toBuffer(function(err, result) {
-            if (err) throw err;
-            callback(result);
-        });
-    }
-
-    function processPackResultItem(fName, item, callback) {
-        let files = [];
-
-        let pixelFormat = options.textureFormat == "png" ? "RGBA8888" : "RGB888";
-        let mime = options.textureFormat == "png" ? Jimp.MIME_PNG : Jimp.MIME_JPEG;
-
-        item.buffer.getBuffer(mime, (err, srcBuffer) => {
-            tinifyImage(srcBuffer, (buffer) => {
-                let opts = {
-                    imageName: fName + "." + options.textureFormat,
-                    imageData: buffer.toString("base64"),
-                    format: pixelFormat,
-                    textureFormat: options.textureFormat,
-                    imageWidth: item.buffer.bitmap.width,
-                    imageHeight: item.buffer.bitmap.height,
-                    removeFileExtension: options.removeFileExtension,
-                    prependFolderName: options.prependFolderName,
-                    base64Export: options.base64Export,
-                    scale: options.scale
-                };
-
-                let file = firstFile.clone({contents: false});
-                file.path = path.join(firstFile.base, fName + "." + exporter.fileExt);
-                file.contents = new Buffer(new exporter().run(item.data, opts));
-                files.push(file);
-
-                if(!options.base64Export) {
-                    file = firstFile.clone({contents: false});
-                    file.path = path.join(firstFile.base, fName + "." + options.textureFormat);
-                    file.contents = buffer;
-                    files.push(file);
-                }
-
-                callback(files);
-            });
-        });
-    }
-
     function endStream(cb) {
         if (!files.length) {
             cb();
@@ -138,47 +101,20 @@ module.exports = function(options) {
         let images = {};
         for(let file of files) images[file.image.name] = file.image;
 
-        PackProcessor.pack(images, options,
+        FilesProcessor.start(images, options, 
             (res) => {
-                let packResult = [];
-                let readyParts = 0;
-
-                for(let data of res) {
-                    new TextureRenderer(data, options, (renderResult) => {
-                        packResult.push({
-                            data: renderResult.data,
-                            buffer: renderResult.buffer
-                        });
-
-                        if(packResult.length >= res.length) {
-
-                            let ix = 0;
-                            for(let item of packResult) {
-
-                                let fName = options.textureName + (packResult.length > 1 ? "-" + ix : "");
-
-                                processPackResultItem(fName, item, (files) => {
-                                    for(let f of files) {
-                                        this.push(f);
-                                    }
-
-                                    readyParts++;
-
-                                    if(readyParts >= packResult.length) {
-                                        cb();
-                                    }
-                                });
-
-                                ix++;
-                            }
-                        }
-                    });
+                for(let item of res) {
+                    let file = firstFile.clone({contents: false});
+                    file.path = path.join(firstFile.base, item.name);
+                    file.contents = item.buffer;
+                    this.push(file);
                 }
+                cb();
             },
             (error) => {
                 this.emit("error", new Error("texture-packer: " + error.description));
                 cb();
-            });
+            })
     }
 
     return through.obj(bufferContents, endStream);
