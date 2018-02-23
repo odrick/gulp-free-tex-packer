@@ -8,7 +8,7 @@ $ npm install gulp-free-tex-packer
    
 # Basic usage
 ```js
-let texturePacker = require('../gulp-free-tex-packer');
+let texturePacker = require('gulp-free-tex-packer');
 
 gulp.task('pack', function() {
     return gulp.src('src/**/*.*')
