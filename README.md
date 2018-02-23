@@ -65,9 +65,9 @@ gulp.task('pack', function() {
 
 # Used libs
 
-**Jimp** - https://github.com/oliver-moran/jimp
-**pretty-data** - https://github.com/vkiryukhin/pretty-data
-**tinify** - https://github.com/tinify/tinify-nodejs
+* **Jimp** - https://github.com/oliver-moran/jimp
+* **pretty-data** - https://github.com/vkiryukhin/pretty-data
+* **tinify** - https://github.com/tinify/tinify-nodejs
 
 ---
 License: MIT
