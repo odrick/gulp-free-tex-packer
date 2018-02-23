@@ -22,7 +22,7 @@ gulp.task('pack', function() {
 Use packer options object
 
 ```js
-let texturePacker = require('../gulp-free-tex-packer');
+let texturePacker = require('gulp-free-tex-packer');
 
 gulp.task('pack', function() {
     return gulp.src('src/**/*.*')
