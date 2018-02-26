@@ -18,21 +18,21 @@ module.exports = function(options) {
     options = options || {};
     options = Object.assign({}, options);
     
-    options.textureName = options.textureName || "pack-result";
-    options.width = options.width || 2048;
-    options.height = options.height || 2048;
-    options.fixedSize = options.fixedSize || false;
-    options.padding = options.padding || 0;
-    options.allowRotation = options.allowRotation || true;
-    options.detectIdentical = options.detectIdentical || true;
-    options.allowTrim = options.allowTrim || true;
-    options.removeFileExtension = options.removeFileExtension || false;
-    options.prependFolderName = options.prependFolderName || true;
-    options.textureFormat = options.textureFormat || "png";
-    options.base64Export = options.base64Export || false;
-    options.scale = options.scale || 1;
-    options.tinify = options.tinify || false;
-    options.tinifyKey = options.tinifyKey || "";
+    options.textureName = options.textureName === undefined ? "pack-result" : options.textureName;
+    options.width = options.width === undefined ? 2048 : options.width;
+    options.height = options.height === undefined ? 2048 : options.height;
+    options.fixedSize = options.fixedSize === undefined ? false : options.fixedSize;
+    options.padding = options.padding === undefined ? 0 : options.padding;
+    options.allowRotation = options.allowRotation === undefined ? true : options.allowRotation;
+    options.detectIdentical = options.detectIdentical === undefined ? true : options.detectIdentical;
+    options.allowTrim = options.allowTrim === undefined ? true : options.allowTrim;
+    options.removeFileExtension = options.removeFileExtension === undefined ? false : options.removeFileExtension;
+    options.prependFolderName = options.prependFolderName === undefined ? true : options.prependFolderName;
+    options.textureFormat = options.textureFormat === undefined ? "png" : options.textureFormat;
+    options.base64Export = options.base64Export === undefined ? false : options.base64Export;
+    options.scale = options.scale === undefined ? 1 : options.scale;
+    options.tinify = options.tinify === undefined ? false : options.tinify;
+    options.tinifyKey = options.tinifyKey === undefined ? "" : options.tinifyKey;
 
     if(!options.packer) options.packer = "MaxRectsBin";
     if(!options.packerMethod) options.packerMethod = "BestShortSideFit";

@@ -73,8 +73,8 @@ class TextureRenderer {
                 this.buffer.blit(img,
                     item.frame.x,
                     item.frame.y,
-                    item.spriteSourceSize.x,
                     item.spriteSourceSize.y,
+                    item.spriteSourceSize.x,
                     item.spriteSourceSize.h,
                     item.spriteSourceSize.w);
             }
