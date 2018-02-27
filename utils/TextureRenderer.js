@@ -67,14 +67,14 @@ class TextureRenderer {
             let img = item.image;
 
             if (item.rotated) {
-                img = item.image.clone();
+                img = img.clone();
                 img.rotate(90);
-
+				
                 this.buffer.blit(img,
                     item.frame.x,
                     item.frame.y,
+                    item.sourceSize.h - item.spriteSourceSize.h - item.spriteSourceSize.y,
                     item.spriteSourceSize.x,
-                    item.spriteSourceSize.y,
                     item.spriteSourceSize.h,
                     item.spriteSourceSize.w);
             }
