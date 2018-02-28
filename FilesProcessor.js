@@ -39,8 +39,7 @@ class FilesProcessor {
                 }
             },
             (error) => {
-                this.emit("error", new Error("texture-packer: " + error.description));
-                cb();
+                if(errorCallback) errorCallback(error);
             });
     }
     

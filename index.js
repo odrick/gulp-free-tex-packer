@@ -73,7 +73,7 @@ module.exports = function(options) {
         }
 
         if (file.isStream()) {
-            this.emit("error", new Error(getErrorDescription("Streaming not supported")));
+            console.error(getErrorDescription("Streaming not supported"));
             cb();
             return;
         }
@@ -85,15 +85,18 @@ module.exports = function(options) {
             return;
 		}
 		
-		Jimp.read(file.contents).then(function (image) {
+		Jimp.read(file.contents, (err, image) => {
+			if (err) {
+				console.error(getErrorDescription("Error reading " + file.relative));
+				cb();
+				return;
+			}
+			
 			image.name = fixPath(file.relative);
 			image._base64 = file.contents.toString("base64");
 			image.width = image.bitmap.width;
 			image.height = image.bitmap.height;
 			files.push({file: file, image: image});
-			cb();
-		}).catch(function (err) {
-			console.warn(getErrorDescription("Error reading " + file.relative));
 			cb();
 		});
     }
@@ -118,9 +121,9 @@ module.exports = function(options) {
                 cb();
             },
             (error) => {
-                this.emit("error", new Error("texture-packer: " + error.description));
+				console.error(getErrorDescription(error.description));
                 cb();
-            })
+            });
     }
 
     return through.obj(bufferContents, endStream);
