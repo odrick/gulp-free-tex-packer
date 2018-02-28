@@ -10,9 +10,15 @@ function fixPath(path) {
     return path.split("\\").join("/");
 }
 
+function getExtFromPath(path) {
+	return path.split(".").pop();
+}
+
 function getErrorDescription(txt) {
     return appInfo.name + ": " + txt;
 }
+
+const SUPPORTED_EXT = ["png", "jpg", "jpeg"];
 
 module.exports = function(options) {
     options = options || {};
@@ -73,23 +79,23 @@ module.exports = function(options) {
         }
 
         if (!firstFile) firstFile = file;
-
-        Jimp.read(file.contents, (err, image) => {
-            if (err) {
-                console.warn("texture-packer: Error reading " + file.relative);
-            }
-            else {
-                //to support Free texture packer data
-                image.name = fixPath(file.relative);
-                image._base64 = file.contents.toString("base64");
-                image.width = image.bitmap.width;
-                image.height = image.bitmap.height;
-
-                files.push({file: file, image: image});
-            }
-
-            cb();
-        });
+		
+		if(SUPPORTED_EXT.indexOf(getExtFromPath(file.relative)) < 0) {
+			cb();
+            return;
+		}
+		
+		Jimp.read(file.contents).then(function (image) {
+			image.name = fixPath(file.relative);
+			image._base64 = file.contents.toString("base64");
+			image.width = image.bitmap.width;
+			image.height = image.bitmap.height;
+			files.push({file: file, image: image});
+			cb();
+		}).catch(function (err) {
+			console.warn(getErrorDescription("Error reading " + file.relative));
+			cb();
+		});
     }
 
     function endStream(cb) {
