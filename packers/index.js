@@ -5,8 +5,10 @@ const list = [
 ];
 
 function getPackerByType(type) {
+    type = type.toLowerCase();
+    
     for(let item of list) {
-        if(item.type == type) {
+        if(item.type.toLowerCase() == type) {
             return item;
         }
     }

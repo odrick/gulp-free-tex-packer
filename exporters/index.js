@@ -6,6 +6,9 @@ let Pixi = require('./Pixi');
 let PhaserHash = require('./PhaserHash');
 let PhaserArray = require('./PhaserArray');
 let Unreal = require('./Unreal');
+let XML = require('./XML');
+let Starling = require('./Starling');
+let Cocos2d = require('./Cocos2d');
 
 const list = [
     JsonHash,
@@ -15,12 +18,17 @@ const list = [
     Pixi,
     PhaserHash,
     PhaserArray,
-    Unreal
+    Unreal,
+    XML,
+    Starling,
+    Cocos2d
 ];
 
 function getExporterByType(type) {
+    type = type.toLowerCase();
+    
     for(let item of list) {
-        if(item.type == type) {
+        if(item.type.toLowerCase() == type) {
             return item;
         }
     }

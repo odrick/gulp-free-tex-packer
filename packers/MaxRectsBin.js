@@ -467,20 +467,34 @@ class MaxRectsBin extends Packer {
     }
 
     static getMethodProps(id="") {
+        id = id.toLowerCase();
+        
         switch(id) {
-            case METHOD.BestShortSideFit:
+            case METHOD.BestShortSideFit.toLowerCase():
                 return {name: "Best short side fit", description: "Positions the Rectangle against the short side of a free Rectangle into which it fits the best."};
-            case METHOD.BestLongSideFit:
+            case METHOD.BestLongSideFit.toLowerCase():
                 return {name: "Best long side fit", description: "Positions the Rectangle against the long side of a free Rectangle into which it fits the best."};
-            case METHOD.BestAreaFit:
+            case METHOD.BestAreaFit.toLowerCase():
                 return {name: "Best area fit", description: "Positions the Rectangle into the smallest free Rectangle into which it fits."};
-            case METHOD.BottomLeftRule:
+            case METHOD.BottomLeftRule.toLowerCase():
                 return {name: "Bottom left rule", description: "Does the Tetris placement."};
-            case METHOD.ContactPointRule:
+            case METHOD.ContactPointRule.toLowerCase():
                 return {name: "Contact point rule", description: "Choosest the placement where the Rectangle touches other Rectangles as much as possible."};
             default:
                 throw Error("Unknown method " + id);
         }
+    }
+    
+    static getMethodByType(type) {
+        type = type.toLowerCase();
+        
+        let keys = Object.keys(METHOD);
+        
+        for(let name of keys) {
+            if(type == name.toLowerCase()) return METHOD[name]; 
+        }
+        
+        return null;
     }
 }
 

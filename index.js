@@ -49,7 +49,7 @@ module.exports = function(options) {
         throw new Error(getErrorDescription("Unknown packer " + options.packer));
     }
 
-    let packerMethod = packer.methods[options.packerMethod];
+    let packerMethod = packer.getMethodByType(options.packerMethod);
     if(!packerMethod) {
         throw new Error(getErrorDescription("Unknown packer method " + options.packerMethod));
     }
