@@ -62,7 +62,7 @@ gulp.task('pack', function() {
 * `tinify` - tinify texture using [TinyPNG](https://tinypng.com/). Default: **false**
 * `tinifyKey` - [TinyPNG key](https://tinypng.com/developers). Default: **""**
 * `packerMethod` - name of pack method (BestShortSideFit, BestLongSideFit, BestAreaFit, BottomLeftRule or ContactPointRule). Default: **BestShortSideFit**
-* `exporter` - name of exporter (JsonHash, JsonArray, Css, OldCss, Pixi, PhaserHash, PhaserArray or Unreal). Default: **JsonHash**
+* `exporter` - name of exporter (JsonHash, JsonArray, Css, OldCss, Pixi, PhaserHash, PhaserArray, XML, Starling, Cocos2d or Unreal). Default: **JsonHash**
 
 # Used libs
 
