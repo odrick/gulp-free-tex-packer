@@ -70,6 +70,7 @@ gulp.task('pack', function() {
 * **Jimp** - https://github.com/oliver-moran/jimp
 * **pretty-data** - https://github.com/vkiryukhin/pretty-data
 * **tinify** - https://github.com/tinify/tinify-nodejs
+* **xmlbuilder** - https://github.com/oozcitak/xmlbuilder-js
 
 ---
 License: MIT
