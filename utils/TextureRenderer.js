@@ -56,6 +56,9 @@ class TextureRenderer {
             for(let item of data) {
                 this.renderItem(item);
             }
+            
+            let filter = new options.filter();
+            filter.apply(image);
 
             if(this.callback) this.callback(this);
         });

@@ -3,6 +3,7 @@ let path = require("path");
 let Jimp = require("jimp");
 let getPackerByType = require("./packers/index").getPackerByType;
 let getExporterByType = require("./exporters/index").getExporterByType;
+let getFilterByType = require("./filters").getFilterByType;
 let FilesProcessor = require("./FilesProcessor");
 let appInfo = require('./package.json');
 
@@ -39,6 +40,7 @@ module.exports = function(options) {
     options.scale = options.scale === undefined ? 1 : options.scale;
     options.tinify = options.tinify === undefined ? false : options.tinify;
     options.tinifyKey = options.tinifyKey === undefined ? "" : options.tinifyKey;
+    options.filter = options.filter === undefined ? "none" : options.filter;
 
     if(!options.packer) options.packer = "MaxRectsBin";
     if(!options.packerMethod) options.packerMethod = "BestShortSideFit";
@@ -58,10 +60,16 @@ module.exports = function(options) {
     if(!exporter) {
         throw new Error(getErrorDescription("Unknown exporter " + options.exporter));
     }
+    
+    let filter = getFilterByType(options.filter);
+    if(!filter) {
+        throw new Error(getErrorDescription("Unknown filter " + options.filter));
+    }
 
     options.packer = packer;
     options.packerMethod = packerMethod;
     options.exporter = exporter;
+    options.filter = filter;
 
     let files = [];
     let firstFile = null;

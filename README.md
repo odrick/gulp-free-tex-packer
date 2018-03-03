@@ -63,6 +63,7 @@ gulp.task('pack', function() {
 * `tinifyKey` - [TinyPNG key](https://tinypng.com/developers). Default: **""**
 * `packerMethod` - name of pack method (BestShortSideFit, BestLongSideFit, BestAreaFit, BottomLeftRule or ContactPointRule). Default: **BestShortSideFit**
 * `exporter` - name of exporter (JsonHash, JsonArray, Css, OldCss, Pixi, PhaserHash, PhaserArray, XML, Starling, Cocos2d or Unreal). Default: **JsonHash**
+* `filter` - name of bitmap filter (grayscale, mask or none). Default: **none**
 
 # Used libs
 
