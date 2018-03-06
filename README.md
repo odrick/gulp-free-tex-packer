@@ -62,15 +62,124 @@ gulp.task('pack', function() {
 * `tinify` - tinify texture using [TinyPNG](https://tinypng.com/). Default: **false**
 * `tinifyKey` - [TinyPNG key](https://tinypng.com/developers). Default: **""**
 * `packerMethod` - name of pack method (BestShortSideFit, BestLongSideFit, BestAreaFit, BottomLeftRule or ContactPointRule). Default: **BestShortSideFit**
-* `exporter` - name of exporter (JsonHash, JsonArray, Css, OldCss, Pixi, PhaserHash, PhaserArray, XML, Starling, Cocos2d or Unreal). Default: **JsonHash**
+* `exporter` - name of predefined exporter (JsonHash, JsonArray, Css, OldCss, Pixi, PhaserHash, PhaserArray, XML, Starling, Cocos2d or Unreal), or custom exporter (see below). Default: **JsonHash**
 * `filter` - name of bitmap filter (grayscale, mask or none). Default: **none**
+
+# Custom exporter
+
+Exporter property can be object. Fields:
+
+* `fileExt` - files extension
+* `template` - path to template file or
+* `content` - content of template
+
+Free texture packer uses [mustache](http://mustache.github.io/) template engine.
+
+There are 3 objects passed to template:
+
+**rects** (Array) list of sprites for export
+
+| prop             | type    | description                     |
+| ---              | ---     | ---                             |
+| name             | String  | sprite name                     |
+| frame            | Object  | frame info (x, y, w, h, hw, hh) |
+| rotated          | Boolean | sprite rotation flag            |
+| trimmed          | Boolean | sprite trimmed flag             |
+| spriteSourceSize | Object  | sprite source size (x, y, w, h) |
+| sourceSize       | Object  | original size (w, h)            |
+| first            | Boolean | first element in array flag     |
+| last             | Boolean | last element in array flag      |
+
+**config** (Object) currect export config
+
+| prop           | type    | description              |
+| ---            | ---     | ---                      |
+| imageWidth     | Number  | texture width            |
+| imageHeight    | Number  | texture height           |
+| scale          | Number  | texture scale            |
+| format         | String  | texture format           |
+| imageName      | String  | texture name             |
+| base64Export   | Boolean | base64 export flag       |
+| base64Prefix   | String  | prefix for base64 string |
+| imageData      | String  | base64 image data        |
+
+**appInfo** (Object) application info
+
+| prop           | type    | description          |
+| ---            | ---     | ---                  |
+| displayName    | String  | App name             |
+| version        | String  | App version          |
+| url            | String  | App url              |
+
+**Template example:**
+```
+{
+  "frames": {
+    {{#rects}}
+    "{{{name}}}": {
+      "frame": {
+        "x": {{frame.x}},
+        "y": {{frame.y}},
+        "w": {{frame.w}},
+        "h": {{frame.h}}
+      },
+      "rotated": {{rotated}},
+      "trimmed": {{trimmed}},
+      "spriteSourceSize": {
+        "x": {{spriteSourceSize.x}},
+        "y": {{spriteSourceSize.y}},
+        "w": {{spriteSourceSize.w}},
+        "h": {{spriteSourceSize.h}}
+      },
+      "sourceSize": {
+        "w": {{sourceSize.w}},
+        "h": {{sourceSize.h}}
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }{{^last}},{{/last}}
+    {{/rects}}
+  },
+  "meta": {
+    "app": "{{{appInfo.url}}}",
+    "version": "{{appInfo.version}}",
+    "image": "{{config.imageName}}",
+    "format": "{{config.format}}",
+    "size": {
+      "w": {{config.imageWidth}},
+      "h": {{config.imageHeight}}
+    },
+    "scale": {{config.scale}}
+  }
+}
+```
+
+**Custom template usage example**
+
+```js
+let texturePacker = require('gulp-free-tex-packer');
+
+gulp.task('pack', function() {
+    let exporter = {
+        fileExt: "json",
+        template: "./MyTemplate.mst"
+    };
+
+    return gulp.src('src/**/*.*')
+		.pipe(texturePacker({
+		    exporter: exporter
+		))
+		.pipe(gulp.dest('dest/'));
+});
+```
 
 # Used libs
 
 * **Jimp** - https://github.com/oliver-moran/jimp
-* **pretty-data** - https://github.com/vkiryukhin/pretty-data
+* **mustache.js** - https://github.com/janl/mustache.js/
 * **tinify** - https://github.com/tinify/tinify-nodejs
-* **xmlbuilder** - https://github.com/oozcitak/xmlbuilder-js
 
 ---
 License: MIT

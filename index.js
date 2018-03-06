@@ -56,7 +56,14 @@ module.exports = function(options) {
         throw new Error(getErrorDescription("Unknown packer method " + options.packerMethod));
     }
 
-    let exporter = getExporterByType(options.exporter);
+    let exporter;
+    if(typeof options.exporter == "string") {
+        exporter = getExporterByType(options.exporter);
+    }
+    else {
+        exporter = options.exporter;
+    }
+    
     if(!exporter) {
         throw new Error(getErrorDescription("Unknown exporter " + options.exporter));
     }

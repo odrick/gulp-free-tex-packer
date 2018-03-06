@@ -2,6 +2,7 @@ let Jimp = require("jimp");
 let PackProcessor = require("./PackProcessor");
 let TextureRenderer = require("./utils/TextureRenderer");
 let tinify = require("tinify");
+let startExporter = require("./exporters/index").startExporter;
 
 class FilesProcessor {
     
@@ -63,10 +64,10 @@ class FilesProcessor {
                     base64Export: options.base64Export,
                     scale: options.scale
                 };
-
+                
                 files.push({
                     name: fName + "." + options.exporter.fileExt,
-                    buffer: new Buffer(new options.exporter().run(item.data, opts))
+                    buffer: new Buffer(startExporter(options.exporter, item.data, opts))
                 });
 
                 if(!options.base64Export) {
