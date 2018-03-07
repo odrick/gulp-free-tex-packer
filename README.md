@@ -32,7 +32,7 @@ gulp.task('pack', function() {
             width: 1024,
             height: 1024,
             fixedSize: false,
-            padding: 2
+            padding: 2,
             allowRotation: true,
             detectIdentical: true,
             allowTrim: true,
@@ -90,7 +90,7 @@ There are 3 objects passed to template:
 | first            | Boolean | first element in array flag     |
 | last             | Boolean | last element in array flag      |
 
-**config** (Object) currect export config
+**config** (Object) current export config
 
 | prop           | type    | description              |
 | ---            | ---     | ---                      |
@@ -170,7 +170,7 @@ gulp.task('pack', function() {
     return gulp.src('src/**/*.*')
 		.pipe(texturePacker({
 		    exporter: exporter
-		))
+		}))
 		.pipe(gulp.dest('dest/'));
 });
 ```
