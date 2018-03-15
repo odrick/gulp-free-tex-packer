@@ -12,7 +12,7 @@ function fixPath(path) {
 }
 
 function getExtFromPath(path) {
-	return path.split(".").pop();
+	return path.split(".").pop().toLowerCase();
 }
 
 function getErrorDescription(txt) {
