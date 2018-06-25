@@ -97,5 +97,14 @@
     "template": "Starling.mst",
     "fileExt": "xml",
     "predefined": true
+  },
+  {
+    "type": "Spine",
+    "description": "Spine atlas",
+    "allowTrim": true,
+    "allowRotation": true,
+    "template": "Spine.mst",
+    "fileExt": "atlas",
+    "predefined": true
   }
 ]
