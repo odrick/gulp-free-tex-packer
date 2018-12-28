@@ -1,6 +1,7 @@
 # gulp-free-tex-packer
-> Free texture packer module for gulp 
 
+> [![Stats](https://nodei.co/npm/gulp-free-tex-packer.svg?downloads=true&stars=true)](https://www.npmjs.com/package/gulp-free-tex-packer) \
+> Free texture packer module for gulp \
 > Based on https://github.com/odrick/free-tex-packer
 
 # Install
