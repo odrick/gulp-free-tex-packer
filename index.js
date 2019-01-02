@@ -1,7 +1,7 @@
 let through = require("through2");
 let path = require("path");
 let texturePacker = require("free-tex-packer-core");
-let appInfo = require("package.json");
+let appInfo = require("./package.json");
 
 function fixPath(path) {
     return path.split("\\").join("/");
