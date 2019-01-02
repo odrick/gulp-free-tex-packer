@@ -1,6 +1,7 @@
 let through = require("through2");
 let path = require("path");
 let texturePacker = require("free-tex-packer-core");
+let appInfo = require("package.json");
 
 function fixPath(path) {
     return path.split("\\").join("/");
@@ -49,6 +50,9 @@ module.exports = function(options) {
             cb();
             return;
         }
+        
+        if(!options) options = {};
+        options.appInfo = appInfo;
 		
 		texturePacker(files, options, (files) => {
 			for(let item of files) {
