@@ -1,5 +1,6 @@
 let through = require("through2");
 let path = require("path");
+let PluginError = require("plugin-error");
 let texturePacker = require("free-tex-packer-core");
 let appInfo = require("./package.json");
 
@@ -11,8 +12,8 @@ function getExtFromPath(path) {
     return path.split(".").pop().toLowerCase();
 }
 
-function getErrorDescription(txt) {
-    return "Gulp free texture packer: " + txt;
+function getError(txt) {
+    return new PluginError("gulp-free-tex-packer", txt)
 }
 
 const SUPPORTED_EXT = ["png", "jpg", "jpeg"];
@@ -28,8 +29,7 @@ module.exports = function (options) {
         }
 
         if (file.isStream()) {
-            console.error(getErrorDescription("Streaming not supported"));
-            cb();
+            cb(getError("Streaming not supported"));
             return;
         }
 
@@ -54,7 +54,11 @@ module.exports = function (options) {
         if (!options) options = {};
         options.appInfo = appInfo;
 
-        texturePacker(files, options, (files) => {
+        texturePacker(files, options, (files, error) => {
+            if (error) {
+                cb(getError(error.description || "Unknown error"));
+                return;
+            }
             for (let item of files) {
                 let file = firstFile.clone({ contents: false });
                 file.path = path.join(firstFile.base, item.name);
