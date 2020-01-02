@@ -8,7 +8,7 @@ function fixPath(path) {
 }
 
 function getExtFromPath(path) {
-	return path.split(".").pop().toLowerCase();
+    return path.split(".").pop().toLowerCase();
 }
 
 function getErrorDescription(txt) {
@@ -17,12 +17,12 @@ function getErrorDescription(txt) {
 
 const SUPPORTED_EXT = ["png", "jpg", "jpeg"];
 
-module.exports = function(options) {
+module.exports = function (options) {
     let files = [];
     let firstFile = null;
 
     function bufferContents(file, enc, cb) {
-		if (file.isNull()) {
+        if (file.isNull()) {
             cb();
             return;
         }
@@ -34,35 +34,35 @@ module.exports = function(options) {
         }
 
         if (!firstFile) firstFile = file;
-		
-		if(SUPPORTED_EXT.indexOf(getExtFromPath(file.relative)) < 0) {
-			cb();
-            return;
-		}
-		
-		files.push({path: fixPath(file.relative), contents: file.contents});
-		
-		cb();
-    }
 
-    function endStream(cb) {
-		if (!files.length) {
+        if (SUPPORTED_EXT.indexOf(getExtFromPath(file.relative)) < 0) {
             cb();
             return;
         }
-        
-        if(!options) options = {};
+
+        files.push({ path: fixPath(file.relative), contents: file.contents });
+
+        cb();
+    }
+
+    function endStream(cb) {
+        if (!files.length) {
+            cb();
+            return;
+        }
+
+        if (!options) options = {};
         options.appInfo = appInfo;
-		
-		texturePacker(files, options, (files) => {
-			for(let item of files) {
-				let file = firstFile.clone({contents: false});
-				file.path = path.join(firstFile.base, item.name);
-				file.contents = item.buffer;
-				this.push(file);
-			}
-			cb();
-		});
+
+        texturePacker(files, options, (files) => {
+            for (let item of files) {
+                let file = firstFile.clone({ contents: false });
+                file.path = path.join(firstFile.base, item.name);
+                file.contents = item.buffer;
+                this.push(file);
+            }
+            cb();
+        });
     }
 
     return through.obj(bufferContents, endStream);
