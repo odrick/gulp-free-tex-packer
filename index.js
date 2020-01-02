@@ -56,7 +56,7 @@ module.exports = function (options) {
 
         texturePacker(files, options, (files, error) => {
             if (error) {
-                cb(getError(error.description || "Unknown error"));
+                cb(getError(error.message || error.description || "Unknown error"));
                 return;
             }
             for (let item of files) {
