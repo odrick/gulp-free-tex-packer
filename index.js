@@ -13,7 +13,7 @@ function getExtFromPath(path) {
 }
 
 function getError(txt) {
-    return new PluginError("gulp-free-tex-packer", txt)
+    return new PluginError(appInfo.name, txt)
 }
 
 const SUPPORTED_EXT = ["png", "jpg", "jpeg"];
