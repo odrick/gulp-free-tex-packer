@@ -1,5 +1,6 @@
 let through = require("through2");
 let path = require("path");
+let PluginError = require("plugin-error");
 let texturePacker = require("free-tex-packer-core");
 let appInfo = require("./package.json");
 
@@ -8,61 +9,64 @@ function fixPath(path) {
 }
 
 function getExtFromPath(path) {
-	return path.split(".").pop().toLowerCase();
+    return path.split(".").pop().toLowerCase();
 }
 
-function getErrorDescription(txt) {
-    return "Gulp free texture packer: " + txt;
+function getError(txt) {
+    return new PluginError(appInfo.name, txt)
 }
 
 const SUPPORTED_EXT = ["png", "jpg", "jpeg"];
 
-module.exports = function(options) {
+module.exports = function (options) {
     let files = [];
     let firstFile = null;
 
     function bufferContents(file, enc, cb) {
-		if (file.isNull()) {
+        if (file.isNull()) {
             cb();
             return;
         }
 
         if (file.isStream()) {
-            console.error(getErrorDescription("Streaming not supported"));
-            cb();
+            cb(getError("Streaming not supported"));
             return;
         }
 
         if (!firstFile) firstFile = file;
-		
-		if(SUPPORTED_EXT.indexOf(getExtFromPath(file.relative)) < 0) {
-			cb();
-            return;
-		}
-		
-		files.push({path: fixPath(file.relative), contents: file.contents});
-		
-		cb();
-    }
 
-    function endStream(cb) {
-		if (!files.length) {
+        if (SUPPORTED_EXT.indexOf(getExtFromPath(file.relative)) < 0) {
             cb();
             return;
         }
-        
-        if(!options) options = {};
+
+        files.push({ path: fixPath(file.relative), contents: file.contents });
+
+        cb();
+    }
+
+    function endStream(cb) {
+        if (!files.length) {
+            cb();
+            return;
+        }
+
+        if (!options) options = {};
         options.appInfo = appInfo;
-		
-		texturePacker(files, options, (files) => {
-			for(let item of files) {
-				let file = firstFile.clone({contents: false});
-				file.path = path.join(firstFile.base, item.name);
-				file.contents = item.buffer;
-				this.push(file);
-			}
-			cb();
-		});
+
+        texturePacker(files, options, (files, error) => {
+            if (error) {
+                cb(getError(error.message || error.description || "Unknown error"));
+                return;
+            }
+            for (let item of files) {
+                let file = firstFile.clone({ contents: false });
+                file.path = path.join(firstFile.base, item.name);
+                file.contents = item.buffer;
+                this.push(file);
+            }
+            cb();
+        });
     }
 
     return through.obj(bufferContents, endStream);
