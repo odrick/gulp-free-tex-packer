@@ -1,7 +1,7 @@
 {
   "name": "gulp-free-tex-packer",
   "displayName": "Gulp free texture packer",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Gulp texture packer",
   "url": "https://github.com/odrick/gulp-free-tex-packer",
   "main": "index.js",
@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "free-tex-packer-core": "^0.3.1",
+    "free-tex-packer-core": "^0.3.2",
     "plugin-error": "^1.0.1",
     "through2": "^2.0.3"
   }
