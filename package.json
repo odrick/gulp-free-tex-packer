@@ -31,7 +31,7 @@
   "author": "Alexander Norinchak",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/odrick/gulp-free-tex-packer"
+    "url": "git+https://github.com/odrick/gulp-free-tex-packer.git"
   },
   "license": "MIT",
   "homepage": "https://github.com/odrick/gulp-free-tex-packer#readme",
