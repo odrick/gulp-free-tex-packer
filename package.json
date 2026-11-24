@@ -1,10 +1,16 @@
 {
   "name": "gulp-free-tex-packer",
   "displayName": "Gulp free texture packer",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "Gulp texture packer",
   "url": "https://github.com/odrick/gulp-free-tex-packer",
   "main": "index.js",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "files": [
+    "index.js"
+  ],
   "scripts": {
     "test": "node --test"
   },
@@ -28,8 +34,12 @@
     "url": "git+https://github.com/odrick/gulp-free-tex-packer"
   },
   "license": "MIT",
+  "homepage": "https://github.com/odrick/gulp-free-tex-packer#readme",
+  "bugs": {
+    "url": "https://github.com/odrick/gulp-free-tex-packer/issues"
+  },
   "dependencies": {
-    "free-tex-packer-core": "^0.3.4",
+    "free-tex-packer-core": "^0.4.0",
     "plugin-error": "^2.0.1"
   },
   "devDependencies": {
