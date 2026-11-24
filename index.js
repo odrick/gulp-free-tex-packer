@@ -34,41 +34,6 @@ function hasImageSignature(ext, contents) {
     return contents.length >= 3 && contents[0] === 0xff && contents[1] === 0xd8 && contents[2] === 0xff;
 }
 
-// free-tex-packer-core skips images it cannot decode and only reports that with console.error
-// ("free-tex-packer-core: Error reading <path>"). When no image can be decoded it never calls back at all.
-// So the plugin listens to these reports while it packs. Several streams can pack at the same time,
-// therefore console.error is patched once and shared, and every stream only takes its own file names.
-const READ_ERROR = /^free-tex-packer-core: Error reading (.+)$/;
-const readErrorListeners = new Set();
-let originalConsoleError = null;
-
-function listenToReadErrors(listener) {
-    if (!readErrorListeners.size) {
-        originalConsoleError = console.error;
-        console.error = function (...args) {
-            let match = READ_ERROR.exec(args.join(" "));
-            if (match) {
-                let consumed = false;
-                for (let item of Array.from(readErrorListeners)) {
-                    if (item(match[1])) consumed = true;
-                }
-                if (consumed) return;
-            }
-            originalConsoleError.apply(console, args);
-        };
-    }
-
-    readErrorListeners.add(listener);
-
-    return () => {
-        readErrorListeners.delete(listener);
-        if (!readErrorListeners.size && originalConsoleError) {
-            console.error = originalConsoleError;
-            originalConsoleError = null;
-        }
-    };
-}
-
 module.exports = function (options) {
     let files = [];
     let firstFile = null;
@@ -113,31 +78,13 @@ module.exports = function (options) {
         // Do not change the object of the caller
         let packOptions = Object.assign({}, options, { appInfo: appInfo });
 
-        let names = new Set(files.map(item => item.path));
-        let unreadable = [];
+        // free-tex-packer-core reports every problem (invalid options, unreadable images) through the callback
         let finished = false;
-        let stopListening = null;
-
         let finish = (error) => {
             if (finished) return;
             finished = true;
-            stopListening();
             cb(error);
         };
-
-        let unreadableError = () => getError("Cannot pack, " + unreadable.length +
-            (unreadable.length === 1 ? " image cannot" : " images cannot") + " be decoded: " + unreadable.join(", "));
-
-        stopListening = listenToReadErrors((name) => {
-            if (finished || !names.has(name)) return false;
-
-            unreadable.push(name);
-
-            // nothing can be packed, the packer would not call back
-            if (unreadable.length === files.length) finish(unreadableError());
-
-            return true;
-        });
 
         try {
             texturePacker(files, packOptions, (result, error) => {
@@ -145,11 +92,6 @@ module.exports = function (options) {
 
                 if (error) {
                     finish(getError(error.message || error.description || "Unknown error"));
-                    return;
-                }
-
-                if (unreadable.length) {
-                    finish(unreadableError());
                     return;
                 }
 
@@ -164,7 +106,6 @@ module.exports = function (options) {
             });
         }
         catch (error) {
-            // e.g. an unknown packer is thrown synchronously
             finish(getError(error.message || error.description || "Unknown error"));
         }
     }
