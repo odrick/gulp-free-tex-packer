@@ -1,4 +1,4 @@
-let through = require("through2");
+let { Transform } = require("stream");
 let path = require("path");
 let PluginError = require("plugin-error");
 let texturePacker = require("free-tex-packer-core");
@@ -164,5 +164,13 @@ module.exports = function (options) {
         }
     }
 
-    return through.obj(bufferContents, endStream);
+    return new Transform({
+        objectMode: true,
+        transform(file, enc, cb) {
+            bufferContents(file, enc, cb);
+        },
+        flush(cb) {
+            endStream.call(this, cb);
+        }
+    });
 };
