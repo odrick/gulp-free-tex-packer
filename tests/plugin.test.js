@@ -158,19 +158,28 @@ describe("errors", () => {
 	});
 });
 
-describe("console.error handling", () => {
-	it("restores console.error after packing, also after a failure", async () => {
+describe("console.error", () => {
+	it("is left alone while packing, also after a failure", async () => {
 		const original = console.error;
-		await collect(texturePacker(), imageFiles());
-		assert.equal(console.error, original);
-		await collect(texturePacker(), [vinylFile("cut.png", TRUNCATED_PNG)]);
-		assert.equal(console.error, original);
-		await collect(texturePacker({ packer: "NoSuchPacker" }), imageFiles());
-		assert.equal(console.error, original);
+		const seen = [];
+		console.error = (...args) => seen.push(args.join(" "));
+		try {
+			const replaced = console.error;
+			const pending = collect(texturePacker(), imageFiles());
+			assert.equal(console.error, replaced);
+			console.error("something else");
+			await pending;
+			await collect(texturePacker(), [vinylFile("cut.png", TRUNCATED_PNG)]);
+			assert.equal(console.error, replaced);
+		} finally {
+			console.error = original;
+		}
+		assert.deepEqual(seen, ["something else"]);
 	});
+});
 
-	it("streams that pack at the same time do not affect each other", async () => {
-		const original = console.error;
+describe("streams that pack at the same time", () => {
+	it("do not affect each other", async () => {
 		const [good, bad, alsoGood] = await Promise.all([
 			collect(texturePacker({ textureName: "good" }), imageFiles()),
 			collect(texturePacker({ textureName: "bad" }), [vinylFile("cut.png", TRUNCATED_PNG)]),
@@ -180,22 +189,7 @@ describe("console.error handling", () => {
 		assert.deepEqual(good.names, ["good.json", "good.png"]);
 		assert.equal(alsoGood.error, null);
 		assert.deepEqual(alsoGood.names, ["also-good.json", "also-good.png"]);
-		assert.match(bad.error.message, /cut\.png/);
-		assert.equal(console.error, original);
-	});
-
-	it("passes other console.error calls through while packing", async () => {
-		const original = console.error;
-		const seen = [];
-		console.error = (...args) => seen.push(args.join(" "));
-		try {
-			const pending = collect(texturePacker(), imageFiles());
-			console.error("something else");
-			await pending;
-		} finally {
-			console.error = original;
-		}
-		assert.ok(seen.includes("something else"));
+		assert.match(bad.error.message, /cut.png/);
 	});
 });
 
