@@ -5,7 +5,9 @@
   "description": "Gulp texture packer",
   "url": "https://github.com/odrick/gulp-free-tex-packer",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "node --test"
+  },
   "keywords": [
     "texture",
     "packer",
@@ -30,5 +32,9 @@
     "free-tex-packer-core": "^0.3.4",
     "plugin-error": "^1.0.1",
     "through2": "^2.0.3"
+  },
+  "devDependencies": {
+    "gulp": "^5.0.1",
+    "vinyl": "^3.0.1"
   }
 }
