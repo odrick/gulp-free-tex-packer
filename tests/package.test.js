@@ -68,6 +68,10 @@ describe("README", () => {
 		for (const call of calls) assert.match(call, /encoding: false/, `example without the binary option: ${call}`);
 	});
 
+	it("lists the supported image formats", () => {
+		for (const ext of [".png", ".jpg", ".jpeg", ".webp"]) assert.ok(readme.includes("`" + ext + "`"), `README does not mention ${ext}`);
+	});
+
 	it("does not mention the removed website", () => {
 		assert.doesNotMatch(readme, /free-tex-packer\.com/);
 	});
