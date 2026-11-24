@@ -16,14 +16,19 @@ function getError(txt) {
     return new PluginError(appInfo.name, txt)
 }
 
-const SUPPORTED_EXT = ["png", "jpg", "jpeg"];
+const SUPPORTED_EXT = ["png", "jpg", "jpeg", "webp"];
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
-/** True when the content starts like a file of the given type (png, jpg, jpeg). */
+/** True when the content starts like a file of the given type (png, jpg, jpeg, webp). */
 function hasImageSignature(ext, contents) {
     if (ext === "png") {
         return contents.length >= PNG_SIGNATURE.length && contents.subarray(0, PNG_SIGNATURE.length).equals(PNG_SIGNATURE);
+    }
+
+    if (ext === "webp") {
+        // RIFF <size> WEBP
+        return contents.length >= 12 && contents.toString("latin1", 0, 4) === "RIFF" && contents.toString("latin1", 8, 12) === "WEBP";
     }
 
     return contents.length >= 3 && contents[0] === 0xff && contents[1] === 0xd8 && contents[2] === 0xff;

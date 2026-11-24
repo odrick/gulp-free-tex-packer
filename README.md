@@ -57,8 +57,9 @@ gulp.task('pack', function() {
 });
 ```
 
-The plugin packs `.png`, `.jpg` and `.jpeg` files and ignores all other files of the stream. The result files are
-written next to the first image of the stream.
+The plugin packs `.png`, `.jpg`, `.jpeg` and `.webp` files and ignores all other files of the stream. The result files
+are written next to the first image of the stream. The texture format (`png`, `jpg` or `webp`) is set with the
+`textureFormat` option.
 
 **Pack options description**: https://github.com/odrick/free-tex-packer-core#available-options
 
@@ -68,7 +69,7 @@ written next to the first image of the stream.
 
 The stream fails with a plugin error (instead of hanging or writing an incomplete atlas) when:
 
-* an image file does not contain a valid PNG/JPEG (for example, gulp 5 read it as text)
+* an image file does not contain a valid PNG/JPEG/WebP (for example, gulp 5 read it as text)
 * an image cannot be decoded; the error lists the files
 * the packer options are invalid, for example an unknown `packer`
 * the stream contains a streamed (not buffered) file

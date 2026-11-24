@@ -71,6 +71,15 @@ const IMAGES = {
 /** A PNG with a correct signature whose data is cut off: it looks like an image but cannot be decoded. */
 const TRUNCATED_PNG = Buffer.concat([PNG_SIGNATURE, Buffer.from("this is not a real png body")]);
 
+/** Two tiny lossless WebP sprites (14x10 and 8x12, with a transparent margin), made once with sharp. */
+const WEBP = {
+	"orange.webp": Buffer.from("UklGRioAAABXRUJQVlA4TB4AAAAvDUACEA8weKM/FPMf8CDMNqrB/F3vfQwR/Q9YDwA=", "base64"),
+	"blue.webp": Buffer.from("UklGRiYAAABXRUJQVlA4TBkAAAAvB8ACEA8woEMx+vMf8BAIJJGPP0NE/0MDAA==", "base64"),
+};
+
+/** A WebP header (RIFF....WEBP) followed by garbage: it looks like a WebP image but cannot be decoded. */
+const TRUNCATED_WEBP = Buffer.concat([Buffer.from("RIFF\x10\x00\x00\x00WEBP", "latin1"), Buffer.from("garbage bytes")]);
+
 // ---- streams ----------------------------------------------------------------------------------------
 
 const BASE = path.join(os.tmpdir(), "gulp-ftp-test-base");
@@ -110,4 +119,4 @@ function tempDir() {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "gulp-ftp-test-"));
 }
 
-module.exports = { makePng, sprite, IMAGES, TRUNCATED_PNG, PNG_SIGNATURE, vinylFile, collect, tempDir, BASE };
+module.exports = { makePng, sprite, IMAGES, WEBP, TRUNCATED_PNG, TRUNCATED_WEBP, PNG_SIGNATURE, vinylFile, collect, tempDir, BASE };
